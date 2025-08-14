@@ -1,0 +1,65 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+Suggest a Race - Inclusive Racing
+{% endblock %}
+
+{% block main %}
+
+<div class="form-container">
+  <h1 style="text-align: center; font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem;">✨ Suggest a Race</h1>
+  <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
+    Know a race or event that includes non-binary participants? Share it with us! 🏃‍♀️🏃‍♂️🏃
+  </p>
+
+  {% if error %}
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  {% endif %}
+
+  <form action="/suggest" method="post" novalidate>
+    <div class="form-group">
+      <label for="race_name" class="form-label">Race/Event Name <span class="text-danger">*</span></label>
+      <input 
+        autocomplete="off" autofocus required
+        id="race_name"
+        name="race_name"
+        type="text"
+        placeholder="Name of race/event"
+        class="form-control"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="race_link" class="form-label">Link to Race/Event Webpage <span class="text-danger">*</span></label>
+      <input 
+        autocomplete="off" required
+        id="race_link"
+        name="race_link"
+        type="url"
+        placeholder="https://example.com"
+        class="form-control"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="comment" class="form-label">Why should this race/event be part of this website? <span class="text-danger">*</span></label>
+      <textarea 
+        autocomplete="off" required
+        id="comment"
+        name="comment"
+        rows="4"
+        placeholder="Tell us why this race is inclusive and welcoming..."
+        class="form-control"
+      ></textarea>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <button type="submit" class="btn btn-primary">🚀 Submit Suggestion</button>
+      <a href="/search" class="btn btn-secondary">📋 Browse Races</a>
+    </div>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+About - Xincluded
+{% endblock %}
+
+{% block main %}
+<div class="about-container">
+  <h1 style="text-align: center; font-size: 3rem; font-weight: 800; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 2rem;">✨ About Xincluded</h1>
+
+  <div class="about-content">
+    <!-- Left: Text -->
+    <div class="about-text">
+      <h2 style="color: var(--secondary-color); margin-bottom: 1rem;">🏃‍♀️ Our Mission</h2>
+      <p>
+        Welcome to Xincluded — a community-driven directory of races and running events that explicitly welcome and include non-binary participants! 🏳️‍⚧️      </p>
+      <p><br>
+        We believe everyone deserves the chance to participate in the sport they love, free from barriers or exclusion based on gender identity. Our platform helps runners find races with non-binary registration options, making the running community more inclusive, welcoming, and celebratory of everyone.      </p>
+      <br>
+      <h2 style="color: var(--secondary-color); margin-bottom: 1rem;">✨ Why I Started This</h2>
+      <p>
+        I’m Chase (they/he) — a non-binary triathlete who casually (and sometimes chaotically) does triathlons. Over the years, I’ve seen more races offer non-binary registration, which is amazing — but simply having the category doesn’t always mean the experience is inclusive.      </p>
+      <p><br>
+        That’s why I created Xincluded: a space powered by real feedback from real athletes. Here, we go beyond just listing races. You’ll find details like whether non-binary participants can podium and win prizes, if you can register with your chosen name, whether pronouns are acknowledged, if gender-neutral bathrooms are available, and much more. </p>
+        <br>
+      <h2 style="color: var(--secondary-color); margin-bottom: 1rem;">💪 Our Approach</h2>
+      <p>
+        This isn’t just a database — it’s a growing, living resource shaped by the community. By sharing your experiences, you help other athletes feel seen, prepared, and welcomed. Together, we can keep pushing for a world where all athletes feel like they belong — on the start line, on the course, and at the finish. 🌈
+      </p>
+    </div>
+
+    <!-- Right: Photo -->
+    <div class="about-image">
+      <img src="/static/chase_running.png" alt="A runner enjoying their sport" style="max-height: 550px; width: auto; max-width: 100%; object-fit: cover;">
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 700px; margin: 2rem auto; text-align: center; padding: 1rem; background: var(--accent-color); border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+  <h3>Join our mission!</h3>
+  <p>
+    Help us grow this community by suggesting races and events that embrace inclusivity. Together, we can make running more welcoming for everyone! 🌈
+  </p><br>
+  <a href="/suggest" class="btn btn-primary">✨ Suggest a Race</a>
+</div>
+
+{% endblock %}
+
+

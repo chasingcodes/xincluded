@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{% block title %}Xincluded{% endblock %}</title>
+    
+    <!-- NO MORE BOOTSTRAP! Just our clean CSS -->
+    <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <img src="/static/website_logo_white.png" alt="Xincluded logo. The x is multicolored" class="navbar-logo">
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">🏠 Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">🔍 Search Races</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/suggest">✨ Suggest a Race</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">ℹ️ About</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
+  <main class="container">
+    {% block main %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="container">
+      <nav class="footer-nav">
+        <a href="/">🏠 Home</a>
+        <a href="/search">🔍 Search Races</a>
+        <a href="/suggest">✨ Suggest a Race</a>
+        <a href="/about">ℹ️ About</a>
+      </nav>
+      <p class="footer-text">&copy; 2025 Xincluded</p>
+    </div>
+  </footer>
+
+</body>
+</html>

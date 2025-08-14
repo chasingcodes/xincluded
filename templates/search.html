@@ -1,0 +1,221 @@
+{% extends "layout.html" %}
+  
+{% block title %}
+Race Search
+{% endblock %}
+
+{% block main %}
+<div class="search-page">
+    <div class="search-header">
+        <h1>� Race Search Results</h1>
+        <div class="search-criteria" id="searchCriteria">
+            <span class="criteria-icon">🔍</span>
+            <span class="criteria-text">Searching by: <strong>{{ placeholders if placeholders else 'All races' }}</strong></span>
+        </div>
+    </div>
+    
+    <div class="search-layout">
+        <!-- LEFT SIDE - Modify Search -->
+        <div class="search-sidebar">
+            <div class="sidebar-header">
+                <h3>🔧 Modify Search</h3>
+                <div class="active-filters" id="activeFilters"></div>
+            </div>
+            
+            <form action="/search" method="post" id="searchForm">
+                <div class="filter-group">
+                    <label class="filter-label">Filter by:</label>
+                    
+                    <div class="filter-pills">
+                        <label class="filter-pill {% if awards %}active{% endif %}">
+                            <input type="checkbox" name="awards" {% if awards %}checked{% endif %}>
+                            🏅 Non-binary awards
+                        </label>
+                        
+                        <label class="filter-pill {% if policy %}active{% endif %}">
+                            <input type="checkbox" name="policy" {% if policy %}checked{% endif %}>
+                            🏳️‍⚧️ Trans/non-binary policy
+                        </label>
+                        
+                        <label class="filter-pill {% if x_gender %}active{% endif %}">
+                            <input type="checkbox" name="x_gender" {% if x_gender %}checked{% endif %}>
+                            📝 X gender registration
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <select name="event_type" class="filter-dropdown">
+                        <option value="">🎽 Type of event</option>
+                        <option value="all" {% if "all" in selected_event_types %}selected{% endif %}>All Event Types</option>
+                        {% for etype in event_types %}
+                        <option value="{{ etype }}" {% if etype in selected_event_types %}selected{% endif %}>{{ etype }}</option>
+                        {% endfor %}
+                    </select>
+                    
+                    <select name="location_state" class="filter-dropdown">
+                        <option value="">📍 Location</option>
+                        <option value="all" {% if selected_location_state == "all" %}selected{% endif %}>All States</option>
+                        {% for loc in locations %}
+                        <option value="{{ loc }}" {% if loc == selected_location_state %}selected{% endif %}>{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="search-actions">
+                    <button type="submit" class="btn-search">Search Races</button>
+                    <a href="/search" class="btn-reset">Reset Filters</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE - Race Results -->
+        <div class="race-results">
+            {% if races %}
+                {% for race in races %}
+                <div class="race-card">
+                    <div class="race-image">
+                        {% if race.photo_logo %}
+                            <img src="{{ url_for('static', filename=race.photo_logo) }}" alt="{{ race.name }} logo">
+                        {% else %}
+                            <div class="no-image">�</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="race-content">
+                        <h4 class="race-title">{{ race.name }}</h4>
+                        <div class="race-meta">
+                            <div class="race-date">
+                                📅 {% set date_parts = race.date.split('-') %}
+                                {% set months = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] %}
+                                {{ months[date_parts[1]|int] }} {{ date_parts[2]|int }}, {{ date_parts[0] }}
+                            </div>
+                            <div class="race-location">
+                                📍 {% if race.location_town %}{{ race.location_town }}, {% endif %}{{ race.location_state }}
+                                {% if race.event_type %} • 🎽 {{ race.event_type }}{% endif %}
+                            </div>
+                        </div>
+                        
+                        <p class="race-description">
+                            {{ race.description[:120] if race.description else 'Join this exciting race event and be part of an inclusive running community!' }}
+                            {% if race.description and race.description|length > 120 %}...{% endif %}
+                        </p>
+                        
+                        <div class="race-tags">
+                            {% if race.nb_registration and 'yes' in race.nb_registration.lower() %}
+                                <span class="race-tag nb-registration">📝 nb registration</span>
+                            {% endif %}
+                            {% if race.nb_awards and ('yes' in race.nb_awards.lower() or 'top non-binary' in race.nb_awards.lower() or 'non-binary' in race.nb_awards.lower()) and 'no' not in race.nb_awards.lower() %}
+                                <span class="race-tag nb-awards">🏅 nb awards</span>
+                            {% endif %}
+                            {% if race.chosen_name_bib and 'yes' in race.chosen_name_bib.lower() %}
+                                <span class="race-tag chosen-name-bib">🏷️ chosen name bib</span>
+                            {% endif %}
+                            {% if race.chosen_name_registration and 'yes' in race.chosen_name_registration.lower() %}
+                                <span class="race-tag chosen-name-registration">✍️ chosen name registration</span>
+                            {% endif %}
+                            {% if race.trans_policy and 'yes' in race.trans_policy.lower() %}
+                                <span class="race-tag trans-policy">🏳️‍⚧️ trans policy</span>
+                            {% endif %}
+                            {% if race.cash_prize and ('yes' in race.cash_prize.lower() or 'gift card' in race.cash_prize.lower() or 'certificate' in race.cash_prize.lower()) and 'no' not in race.cash_prize.lower() %}
+                                <span class="race-tag cash-prize">💰 cash prize</span>
+                            {% endif %}
+                        </div>
+                        
+                        <a href="{{ url_for('race_details', slug=race.slug) }}" class="btn-details">See details ↗</a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-results">
+                    <h4>No races found matching your criteria</h4>
+                    <p>Try adjusting your filters or <a href="/search">view all races</a></p>
+                </div>
+            {% endif %}
+
+            <div class="suggest-section">
+                <h4>✨ Don't see your race?</h4>
+                <p>Help us grow our database of inclusive races!</p>
+                <a href="/suggest" class="btn btn-primary">✨ Suggest a Race</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-submit form when filters change
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('searchForm');
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    const selects = form.querySelectorAll('select');
+    
+    // Function to update search criteria display
+    function updateSearchCriteria() {
+        const criteriaText = document.querySelector('.criteria-text');
+        const activeFilters = document.getElementById('activeFilters');
+        
+        let criteria = [];
+        let activeFilterCount = 0;
+        
+        // Check active checkboxes
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const label = checkbox.closest('.filter-pill').textContent.trim();
+                criteria.push(label);
+                activeFilterCount++;
+            }
+        });
+        
+        // Check active selects
+        selects.forEach(select => {
+            if (select.value && select.value !== '' && select.value !== 'all') {
+                const selectedOption = select.options[select.selectedIndex].text;
+                criteria.push(selectedOption);
+                activeFilterCount++;
+            }
+        });
+        
+        // Update criteria display
+        if (criteria.length > 0) {
+            criteriaText.innerHTML = 'Searching by: <strong>' + criteria.join(', ') + '</strong>';
+        } else {
+            criteriaText.innerHTML = 'Searching by: <strong>All races</strong>';
+        }
+        
+        // Update active filters count
+        if (activeFilterCount > 0) {
+            activeFilters.innerHTML = `<span class="filter-count">${activeFilterCount} active filter${activeFilterCount > 1 ? 's' : ''}</span>`;
+        } else {
+            activeFilters.innerHTML = '<span class="filter-count">No filters applied</span>';
+        }
+    }
+    
+    // Initialize criteria display
+    updateSearchCriteria();
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Update pill appearance
+            const pill = this.closest('.filter-pill');
+            if (this.checked) {
+                pill.classList.add('active');
+            } else {
+                pill.classList.remove('active');
+            }
+            // Update criteria display
+            updateSearchCriteria();
+            // Auto-submit form
+            form.submit();
+        });
+    });
+    
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            updateSearchCriteria();
+            form.submit();
+        });
+    });
+});
+</script>
+
+{% endblock %}

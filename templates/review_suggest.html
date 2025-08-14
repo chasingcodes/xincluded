@@ -1,0 +1,46 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+Review Race Suggestion - Admin
+{% endblock %}
+
+{% block main %}
+
+<div class="form-container">
+    <h1 style="text-align: center; font-size: 2.5rem; font-weight: 800; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 2rem;">🔍 Review Race Suggestion</h1>
+
+    <div style="background: var(--white); border-radius: 1rem; padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2rem;">
+        <!-- Display submission information -->
+        <div style="display: grid; gap: 1rem;">
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🏃‍♀️ Race Name</h3>
+                <p style="font-size: 1.1rem; font-weight: 600;">{{ suggestion.race_name }}</p>
+            </div>
+            
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">🔗 Race Link</h3>
+                <p><a href="{{ suggestion.race_link }}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">{{ suggestion.race_link }}</a></p>
+            </div>
+            
+            <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">💬 Comment/Reason</h3>
+                <p style="line-height: 1.6;">{{ suggestion.comment }}</p>
+            </div>
+            
+            <div>
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">📅 Submitted Date</h3>
+                <p>{{ suggestion.timestamp or 'N/A' }}</p>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+            <a href="/admin/dashboard" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+            
+            <form method="POST" action="/admin/dashboard/review_suggest/{{ suggestion.id }}" style="display: inline;">
+                <button type="submit" class="btn btn-success">✅ Archive Suggestion</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

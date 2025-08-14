@@ -1,0 +1,49 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+Archived Suggestions
+{% endblock %}
+
+{% block main %}
+
+<div class="container mt-4">
+    <h1>Archived Race Suggestions ({{ archived_count }})</h1>
+
+    <div class="mb-3">
+        <a href="/admin/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+    
+    {% if archived %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Suggestion ID</th>
+                    <th>Race Name</th>
+                    <th>Race Link</th>
+                    <th>Comment</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for suggestion in archived %}
+                <tr>
+                    <td>{{ suggestion.id }}</td>
+                    <td>{{ suggestion.race_name }}</td>
+                    <td><a href="{{ suggestion.race_link }}" target="_blank">View Link</a></td>
+                    <td>{{ suggestion.comment[:100] }}{% if suggestion.comment|length > 100 %}...{% endif %}</td>
+                    <td>
+                        <a class="btn btn-sm btn-info" href="/admin/dashboard/review_suggest/{{ suggestion.id }}">View Details</a>
+                        <form method="post" action="/admin/dashboard/unarchive_suggestion/{{ suggestion.id }}" style="display: inline;">
+                            <button type="submit" class="btn btn-sm btn-warning">Unarchive</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No archived suggestions.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

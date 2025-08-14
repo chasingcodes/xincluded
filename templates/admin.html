@@ -1,0 +1,33 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+Admin Login - Inclusive Racing
+{% endblock %}
+
+{% block main %}
+
+<div class="form-container" style="max-width: 400px; margin-top: 4rem;">
+    {% if error %}
+    <div class="alert alert-danger">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <h1 style="text-align: center; font-size: 2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 2rem;">🔐 Admin Login</h1>
+    
+    <form action="/admin" method="post">
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input autocomplete="off" autofocus name="email" id="email" placeholder="admin@example.com" type="email" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input autocomplete="off" name="password" id="password" placeholder="Enter your password" type="password" class="form-control">
+        </div>
+        <div style="text-align: center;">
+            <button class="btn btn-primary" type="submit">🚀 Log In</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

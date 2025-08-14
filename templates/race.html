@@ -1,0 +1,191 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ race.name }} - Race Details{% endblock %}
+
+{% block main %}
+<div class="race-detail-container">
+  <!-- Main Race Layout -->
+  <div class="race-layout">
+    <!-- Left Side: Race Info -->
+    <div class="race-info-section">
+      <div class="race-header">
+        <h1>{{ race.name }}</h1>
+        <div class="race-meta">
+          <div class="meta-item">
+            <span class="meta-icon">📍</span>
+            <span class="meta-text">{{ race.location_town }}, {{ race.location_state }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">📅</span>
+            <span class="meta-text">
+              {% set date_parts = race.date.split('-') %}
+              {% set months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] %}
+              {{ months[date_parts[1]|int] }} {{ date_parts[2]|int }}, {{ date_parts[0] }}
+            </span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🏃‍♀️</span>
+            <span class="meta-text">{{ race.event_type or 'Running Event' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="race-description">
+        <p>{{ race.description }}</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Photo -->
+    <div class="race-photo-section">
+      {% if race.photo_logo %}
+        <img src="{{ url_for('static', filename=race.photo_logo) }}" 
+            alt="{{ race.name }} logo" 
+            class="race-photo">
+      {% else %}
+        <div class="race-photo-placeholder">
+          <span>🏃‍♀️ No image available</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Content Sections -->
+  <div class="content-sections">
+    <!-- Left Side: Registration Options, Awards, Bathrooms, Names/Pronouns -->
+    <div class="race-details-left">
+      <section class="info-section">
+        <h3>📝 Registration & Event Details</h3>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">🏁 Non-binary registration:</span>
+            <span class="info-value">{{ race.nb_registration or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🏅 Non-binary awards:</span>
+            <span class="info-value">{{ race.nb_awards or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">💰 Cash prizes:</span>
+            <span class="info-value">{{ race.cash_prize or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🚻 Gender neutral bathrooms:</span>
+            <span class="info-value">{{ race.bathrooms or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">📝 Chosen name registration:</span>
+            <span class="info-value">{{ race.chosen_name_registration or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🏷️ Chosen name on bib:</span>
+            <span class="info-value">{{ race.chosen_name_bib or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">📦 Chosen name at pickup:</span>
+            <span class="info-value">{{ race.chosen_name_packet_pickup or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🌈 Pronouns option:</span>
+            <span class="info-value">{{ race.pronouns or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">📏 Distance:</span>
+            <span class="info-value">{{ race.distance or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">♿ Accessibility:</span>
+            <span class="info-value">{{ race.accessibility or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">👕 Race T-shirt:</span>
+            <span class="info-value">{{ race.race_shirt or 'Not specified' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">🏆 Medal:</span>
+            <span class="info-value">{{ race.medal or 'Not specified' }}</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Trans Policy - Full Width -->
+    <section class="info-section policy-section">
+      <h3>🏳️‍⚧️ Trans Policy Information</h3>
+      <div class="policy-content">
+        {% if race.trans_policy %}
+          <p>{{ race.trans_policy }}</p>
+        {% else %}
+          <p class="no-policy">No specific policy information available. Contact the race organizers for details about their inclusivity policies.</p>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- Registration Link Section -->
+    {% if race.registration_link %}
+    <div class="registration-link-section">
+      <a href="{{ race.registration_link }}" target="_blank" class="btn-register">Register for {{ race.name }}</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Community Feedback Section -->
+  <div class="feedback-layout">
+    <!-- Community Feedback -->
+    <div class="feedback-section">
+      <h3>💬 Community Feedback</h3>
+      {% if community_feedback %}
+        <div class="feedback-list">
+          {% for feedback in community_feedback %}
+            <div class="feedback-card">
+              <p class="feedback-text">{{ feedback.text }}</p>
+              <div class="feedback-author">
+                {% if feedback.name and feedback.name != 'N/A' %}
+                  - {{ feedback.name }}
+                {% else %}
+                  - Anonymous
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="no-feedback">No community feedback yet. Be the first to share your experience!</p>
+      {% endif %}
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="feedback-form-section">
+      <h4>Share Your Experience</h4>
+      <form action="{{ url_for('submit_feedback', slug=race.slug) }}" method="post" class="feedback-form">
+        <div class="form-group">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Optional">
+        </div>
+
+        <div class="form-group">
+          <label for="pronouns" class="form-label">Pronouns</label>
+          <input type="text" class="form-control" id="pronouns" name="pronouns" placeholder="e.g. they/them, she/her">
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="Optional">
+        </div>
+
+        <div class="form-group">
+          <label for="event" class="form-label">Event</label>
+          <input type="text" class="form-control" id="event" name="event" placeholder="e.g., 5K, marathon">
+        </div>
+
+        <div class="form-group">
+          <label for="comment" class="form-label">Feedback *</label>
+          <textarea class="form-control" id="comment" name="comment" rows="4" required placeholder="Share your experience..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">🚀 Submit Feedback</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

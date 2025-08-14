@@ -1,0 +1,132 @@
+{% extends "layout.html" %} 
+
+{% block title %}
+Review Feedback
+{% endblock %}
+
+{% block main %}
+
+<div class="container mt-4">
+    <h1>Feedback Details</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th>Feedback ID:</th>
+                    <td>{{ feedback.id }}</td>
+                </tr>
+                <tr>
+                    <th>User:</th>
+                    <td>{{ feedback.name_of_user or 'Anonymous' }}</td>
+                </tr>
+                <tr>
+                    <th>Race Name:</th>
+                    <td>{{ feedback.name_of_race }}</td>
+                </tr>
+                <tr>
+                    <th>Race ID:</th>
+                    <td>{{ feedback.race_id }}</td>
+                </tr>
+                <tr>
+                    <th>Original Feedback:</th>
+                    <td>
+                        <div class="border p-3 bg-light">
+                            {{ feedback.feedback_raw }}
+                        </div>
+                    </td>
+                </tr>
+                {% if feedback.feedback_public %}
+                <tr>
+                    <th>Public Feedback:</th>
+                    <td>
+                        <div class="border p-3 bg-success bg-opacity-10">
+                            {{ feedback.feedback_public }}
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>Status:</th>
+                    <td>
+                        {% if feedback.approved %}
+                            <span class="badge bg-success">Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning">Pending Review</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+            <div class="mt-3">
+                <a href="/admin/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+                
+                {% if not feedback.approved %}
+                <div class="mt-4">
+                    <h5>Edit and Approve Feedback</h5>
+                    <form method="POST" action="/admin/dashboard/approve_feedback/{{ feedback.id }}">
+                        <div class="mb-3">
+                            <label for="feedback_public" class="form-label">Public Feedback (Edit as needed):</label>
+                            <textarea 
+                                id="feedback_public" 
+                                name="feedback_public" 
+                                class="form-control" 
+                                rows="5" 
+                                required>{{ feedback.feedback_public or feedback.feedback_raw }}</textarea>
+                            <div class="form-text">This is the version that will be displayed publicly. Edit as needed for clarity, grammar, or content moderation.</div>
+                        </div>
+                        <button class="btn btn-success" type="submit">Save and Approve Feedback</button>
+                    </form>
+                </div>
+                {% else %}
+                <div class="mt-3">
+                    <span class="badge bg-success mb-3">This feedback has been approved and published</span>
+                    
+                    <!-- Unapprove feedback -->
+                    <div class="mb-3">
+                        <form method="POST" action="/admin/dashboard/unapprove_feedback/{{ feedback.id }}" style="display: inline;">
+                            <button class="btn btn-outline-warning btn-sm" type="submit">Hide from Public</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Edit approved feedback -->
+                    <div class="mt-3">
+                        <h5>Edit Published Feedback</h5>
+                        <form method="POST" action="/admin/dashboard/edit_feedback/{{ feedback.id }}">
+                            <div class="mb-3">
+                                <label for="feedback_public_edit" class="form-label">Update Public Feedback:</label>
+                                <textarea 
+                                    id="feedback_public_edit" 
+                                    name="feedback_public" 
+                                    class="form-control" 
+                                    rows="5" 
+                                    required>{{ feedback.feedback_public }}</textarea>
+                            </div>
+                            <button class="btn btn-warning" type="submit">Update Published Feedback</button>
+                        </form>
+                    </div>
+                {% endif %}
+                
+                <!-- Delete feedback (always available) -->
+                <div class="mt-4 border-top pt-3">
+                    <h6 class="text-danger">Danger Zone</h6>
+                    <form method="POST" action="/admin/dashboard/delete_feedback/{{ feedback.id }}" onsubmit="return confirm('Are you sure you want to delete this feedback? This action cannot be undone.')">
+                        <button class="btn btn-danger btn-sm" type="submit">Delete Feedback</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
