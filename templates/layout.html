@@ -18,7 +18,10 @@
             <a href="/" class="navbar-brand">
                 <img src="/static/website_logo_white.png" alt="Xincluded logo. The x is multicolored" class="navbar-logo">
             </a>
-            <ul class="navbar-nav">
+            <button class="navbar-toggler" onclick="toggleMobileMenu()">
+                ☰
+            </button>
+            <ul class="navbar-nav" id="navbarNav">
                 <li class="nav-item">
                     <a class="nav-link" href="/">🏠 Home</a>
                 </li>
@@ -51,6 +54,34 @@
       <p class="footer-text">&copy; 2025 Xincluded</p>
     </div>
   </footer>
+
+  <script>
+    function toggleMobileMenu() {
+      const navbar = document.getElementById('navbarNav');
+      navbar.classList.toggle('show');
+    }
+    
+    // Close mobile menu when clicking on a link
+    document.addEventListener('DOMContentLoaded', function() {
+      const navLinks = document.querySelectorAll('.nav-link');
+      navLinks.forEach(function(link) {
+        link.addEventListener('click', function() {
+          const navbar = document.getElementById('navbarNav');
+          navbar.classList.remove('show');
+        });
+      });
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(event) {
+        const navbar = document.getElementById('navbarNav');
+        const toggler = document.querySelector('.navbar-toggler');
+        
+        if (!navbar.contains(event.target) && !toggler.contains(event.target)) {
+          navbar.classList.remove('show');
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>

@@ -204,15 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             // Update criteria display
             updateSearchCriteria();
-            // Auto-submit form
-            form.submit();
+            // Removed auto-submit - let users manually click "Search Races"
         });
     });
     
     selects.forEach(select => {
         select.addEventListener('change', function() {
             updateSearchCriteria();
-            form.submit();
+            // Removed auto-submit - let users manually click "Search Races"
         });
     });
 });

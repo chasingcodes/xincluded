@@ -17,9 +17,6 @@ app.config["SESSION_PERMANENT"] = False # Logs out admin when browser is closed
 app.config["SESSION_TYPE"] = "filesystem" # Stores session data
 Session(app) # Initilizes extension
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
-
 # Prevents browser from caching pages. Data always fresh
 @app.after_request
 def after_request(response):
@@ -229,7 +226,7 @@ def index():
         return render_template("index.html", locations=locations, event_types=event_types, races=races)
     
     else: # Method = POST
-        location_state = request.form.get("location")
+        location_state = request.form.get("location_state")
         event_type = request.form.get("event_type")
 
         # Handle "all" selections by not including them in the query
@@ -257,10 +254,13 @@ def search():
         location_state = request.form.get("location_state")
         event_type = request.form.getlist("event_type")
         
+        # Filter out empty strings from event_type
+        event_type = [et for et in event_type if et and et.strip()]
+        
         # Handle single event_type from homepage
         if not event_type:
             single_event_type = request.form.get("event_type")
-            if single_event_type:
+            if single_event_type and single_event_type.strip():
                 event_type = [single_event_type]
 
         # Building SQL query dynamically, will group by slug to avoid duplicates
@@ -295,7 +295,8 @@ def search():
             query_params.append(f"location_state={location_state}")
         if event_type:
             for etype in event_type: # Multiple options selected
-                query_params.append(f"event_type={etype}")
+                if etype and etype.strip():  # Only add non-empty event types
+                    query_params.append(f"event_type={etype}")
 
         # Then join all with &
         query_string = "&".join(query_params)
@@ -307,6 +308,10 @@ def search():
         # Retrieve filter values from query string
         selected_location_state = request.args.get("location_state")
         selected_event_types = request.args.getlist("event_type")
+        
+        # Filter out empty strings from selected_event_types
+        selected_event_types = [et for et in selected_event_types if et and et.strip()]
+        
         awards = request.args.get("awards")
         x_gender = request.args.get("x_gender")
         policy = request.args.get("policy")
